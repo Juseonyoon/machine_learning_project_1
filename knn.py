@@ -7,6 +7,7 @@ from pylab import *
 
 from binary import *
 
+import math
 
 class KNN(BinaryClassifier):
     """
@@ -66,7 +67,21 @@ class KNN(BinaryClassifier):
 
             val = 0                    # this is our return value: #pos - #neg of the K nearest neighbors of X
             ### TODO: YOUR CODE HERE
-            util.raiseNotDefined()
+
+            distances = []
+            for index, x in enumerate(self.trX):
+                distance = 0
+                for index2, feature in enumerate(X):
+                    difference = x[index2] - feature
+                    distance += difference * difference
+                distance = math.sqrt(distance)
+
+                distances.append((distance, self.trY[index]))
+
+            distances = sorted(distances, key = lambda distance: distance[0])
+
+            for i in range(0, K):
+                val = val + (1 if distances[i][1] > 0 else -1)
 
             return val
         else:
@@ -75,7 +90,16 @@ class KNN(BinaryClassifier):
 
             val = 0                    # this is our return value: #pos - #neg within and epsilon ball of X
             ### TODO: YOUR CODE HERE
-            util.raiseNotDefined()
+
+            for index, x in enumerate(self.trX):
+                distance = 0
+                for index2, feature in enumerate(X):
+                    difference = x[index2] - feature
+                    distance += difference * difference
+                distance = math.sqrt(distance)
+
+                val = val + (1 if self.trY[index] > 0 else -1) if distance <= eps else val
+
             return val
                 
             
