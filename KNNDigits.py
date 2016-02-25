@@ -37,7 +37,7 @@ def findKNN(D, xhat, K):  # D is the training data, xhat is the test point
     allDist = []
     for n in range(len(D)):
         (x,y) = D[n]
-        allDist.append( (exampleDistance(x, xhat), n) )
+        allDist.append((exampleDistance(x, xhat), n))
     allDist.sort()
     return allDist[0:K]
 
