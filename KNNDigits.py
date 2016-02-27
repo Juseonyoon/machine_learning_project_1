@@ -1,5 +1,6 @@
 import sys,os
 from math import *
+import numpy
 
 def loadDigitData(filename, maxExamples=100000):
     h = open(filename, 'r')
@@ -15,6 +16,7 @@ def loadDigitData(filename, maxExamples=100000):
                 v = float(a[i]) / 255.
                 if v > 0.:
                     x[i] = v
+                # x[i] = v
             D.append( (x,y) )
             if len(D) >= maxExamples:
                 break
@@ -30,6 +32,21 @@ def exampleDistance(x1, x2):
     for i,v2 in x2.iteritems():
         if not x1.has_key(i):
             dist += v2 * v2
+    return sqrt(dist)
+
+def subsampleExampleDistance(x1, x2, fullDimensionality, dimensionality):
+    dist = 0.
+    dimensions = numpy.random.permutation(fullDimensionality)
+    dimensions = dimensions[0:dimensionality]
+    for i, v1 in x1.iteritems():
+        if i in dimensions:
+            v2 = 0.
+            if x2.has_key(i): v2 = x2[i]
+            dist += (v1 - v2) * (v1 - v2)
+    for i, v2 in x2.iteritems():
+        if i in dimensions:
+            if not x1.has_key(i):
+                dist += v2 * v2
     return sqrt(dist)
 
 # returns list of K (dist, n) where n is the nth training example

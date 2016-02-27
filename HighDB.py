@@ -13,27 +13,29 @@ def generateUniformExample(numDim):
 def generateUniformDataset(numDim, numEx):
     return [generateUniformExample(numDim) for n in range(numEx)]
 
-
-def computeDistances(data, dimensions):
-    D = dimensions
+def computeDistances(data, fullDimensionality, dimensionality):
+    D = fullDimensionality
+    d = dimensionality
     N = len(data)
     dist = []
     for n in range(N):
         for m in range(n):
-            dist.append(KNNDigits.exampleDistance(data[n][0], data[m][0]) / sqrt(D))
+            dist.append(KNNDigits.subsampleExampleDistance(data[n][0], data[m][0], D, d) / sqrt(d))
     return dist
 
-Dims = [784]   # dimensionalities to try
+D = 784
+Dims = [2, 8, 32, 128, 512] # dimensionalities to try
+# Dims = [8, 32, 128, 512, 784] # dimensionalities to try
 Cols = ['#FF0000', '#880000', '#000000', '#000088', '#0000FF']
 Bins = arange(0, 1, 0.02)
 
 plt.xlabel('distance / sqrt(dimensionality)')
 plt.ylabel('# of pairs of points at that distance')
-plt.title('dimensionality versus uniform point distances')
+plt.title('dimensionality versus digits data point distances')
 
 for i, d in enumerate(Dims):
     data = KNNDigits.loadDigitData('data/1vs2.all', 100000000)
-    distances = computeDistances(data, d)
+    distances = computeDistances(data, D, d)
 
     print "D=%d, average distance=%g" % (d, mean(distances) * sqrt(d))
     plt.hist(distances,

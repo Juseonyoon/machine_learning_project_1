@@ -29,7 +29,7 @@ Bins = arange(0, 1, 0.02)
 
 plt.xlabel('distance / sqrt(dimensionality)')
 plt.ylabel('# of pairs of points at that distance')
-plt.title('dimensionality versus uniform point distances')
+plt.title('dimensionality versus digits data point distances')
 
 for i, d in enumerate(Dims):
     data = KNNDigits.loadDigitData('data/1vs2.all', 100000000)
@@ -44,7 +44,6 @@ for i, d in enumerate(Dims):
         plt.legend(['%d dims' % d for d in Dims])
         plt.show(False)
         x = raw_input('Press enter to continue...')
-
 
 plt.legend(['%d dims' % d for d in Dims])
 plt.savefig('fig.pdf')
