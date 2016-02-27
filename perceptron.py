@@ -36,7 +36,7 @@ class Perceptron(BinaryClassifier):
         Reset the internal state of the classifier.
         """
 
-        self.weights = 0    # our weight vector
+        self.weights = []
         self.bias    = 0    # our bias
         self.numUpd  = 0    # number of updates made
 
@@ -50,7 +50,7 @@ class Perceptron(BinaryClassifier):
         """
         Return a string representation of the tree
         """
-        return    "w=" + repr(self.weights)   +  ", b=" + repr(self.bias)
+        return "w=" + repr(self.weights) + ", b=" + repr(self.bias)
 
     def predict(self, X):
         """
@@ -72,14 +72,20 @@ class Perceptron(BinaryClassifier):
         our weight vector and bias according to the perceptron rule.
         """
 
+        if not self.weights:
+            for (i, x) in enumerate(X):
+                self.weights.append(0)
+
         # check to see if we've made an error
         if Y * self.predict(X) <= 0:   ### SOLUTION-AFTER-IF
-            self.numUpd  = self.numUpd  + 1
+            self.numUpd += 1
 
             # perform an update
-            self.weights = util.raiseNotDefined()    ### TODO: YOUR CODE HERE
+            # TODO: YOUR CODE HERE
+            for i, x in enumerate(X):
+                self.weights[i] += Y * x
 
-            self.bias    = util.raiseNotDefined()    ### TODO: YOUR CODE HERE
+            self.bias += Y
 
 
     def nextIteration(self):
