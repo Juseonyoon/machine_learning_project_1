@@ -81,7 +81,8 @@ class KNN(BinaryClassifier):
             distances = sorted(distances, key = lambda distance: distance[0])
 
             for i in range(0, K):
-                val = val + (1 if distances[i][1] > 0 else -1)
+                if len(distances) > i:
+                    val += 1 if distances[i][1] > 0 else -1
 
             return val
         else:
