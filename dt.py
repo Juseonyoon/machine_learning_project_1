@@ -65,7 +65,10 @@ class DT(BinaryClassifier):
         """
 
         ### TODO: YOUR CODE HERE
-        util.raiseNotDefined()
+        if self.isLeaf:
+            return self.label
+        self = self.left if X[self.feature] < 0.5 else self.right
+        return self.predict(X)
 
     def trainDT(self, X, Y, maxDepth, used):
         """
@@ -73,22 +76,24 @@ class DT(BinaryClassifier):
         """
 
         # get the size of the data set
-        N,D = X.shape
+        if len(X) <= 0:
+            N = D = 0
+        else:
+            N, D = X.shape
 
         # check to see if we're either out of depth or no longer
         # have any decisions to make
         if maxDepth <= 0 or len(util.uniq(Y)) <= 1:
             # we'd better end at this point.  need to figure
             # out the label to return
-            self.isLeaf = util.raiseNotDefined()    ### TODO: YOUR CODE HERE
-
-            self.label  = util.raiseNotDefined()    ### TODO: YOUR CODE HERE
-
+            ### TODO: YOUR CODE HERE
+            self.isLeaf = True
+            self.label = util.mode(Y)
 
         else:
             # we need to find a feature to split on
             bestFeature = -1     # which feature has lowest error
-            bestError   = N      # the number of errors for this feature
+            bestError = N      # the number of errors for this feature
             for d in range(D):
                 # have we used this feature yet
                 if d in used:
@@ -96,32 +101,38 @@ class DT(BinaryClassifier):
 
                 # suppose we split on this feature; what labels
                 # would go left and right?
-                leftY  = util.raiseNotDefined()    ### TODO: YOUR CODE HERE
-
-                rightY = util.raiseNotDefined()    ### TODO: YOUR CODE HERE
-
+                ### TODO: YOUR CODE HERE
+                counterno = util.Counter()
+                counteryes = util.Counter()
+                for i, x in enumerate(X):
+                    if x[d] < 0.5:
+                        counterno['NO' if Y[i] < 0 else 'YES'] += 1
+                    else:
+                        counteryes['NO' if Y[i] < 0 else 'YES'] += 1
+                leftY = 1 if counterno['YES'] >= counterno['NO'] else -1
+                rightY = 1 if counteryes['YES'] >= counteryes['NO'] else -1
 
                 # we'll classify the left points as their most
                 # common class and ditto right points.  our error
                 # is the how many are not their mode.
-                error = util.raiseNotDefined()    ### TODO: YOUR CODE HERE
-
+                ### TODO: YOUR CODE HERE
+                error = counterno['YES' if counterno['YES'] < counterno['NO'] else 'NO'] +\
+                        counteryes['YES' if counteryes['YES'] < counteryes['NO'] else 'NO']
 
                 # check to see if this is a better error rate
                 if error <= bestError:
                     bestFeature = d
-                    bestError   = error
+                    bestError = error
 
             if bestFeature < 0:
                 # this shouldn't happen, but just in case...
                 self.isLeaf = True
-                self.label  = util.mode(Y)
+                self.label = util.mode(Y)
 
             else:
-                self.isLeaf  = util.raiseNotDefined()    ### TODO: YOUR CODE HERE
-
-                self.feature = util.raiseNotDefined()    ### TODO: YOUR CODE HERE
-
+                self.isLeaf  = False
+                self.feature = bestFeature ### TODO: YOUR CODE HERE
+                used.append(bestFeature)
 
                 self.left  = DT({'maxDepth': maxDepth-1})
                 self.right = DT({'maxDepth': maxDepth-1})
@@ -131,7 +142,18 @@ class DT(BinaryClassifier):
                 #   self.right.trainDT(...) 
                 # with appropriate arguments
                 ### TODO: YOUR CODE HERE
-                util.raiseNotDefined()
+                nos = [[], []]
+                yess = [[], []]
+                for i, x in enumerate(X):
+                    if x[bestFeature] < 0.5:
+                        nos[0].append(x)
+                        nos[1].append(Y[i])
+                    else:
+                        yess[0].append(x)
+                        yess[1].append(Y[i])
+
+                self.left.trainDT(array(nos[0]), nos[1], maxDepth - 1, used)
+                self.right.trainDT(array(yess[0]), yess[1], maxDepth - 1, used)
 
     def train(self, X, Y):
         """
