@@ -32,7 +32,7 @@ class DT(BinaryClassifier):
         # have a feature to split on, a left child (for when the
         # feature value is < 0.5) and a right child (for when the
         # feature value is >= 0.5)
-        
+
         self.isLeaf = True
         self.label  = 1
 
@@ -132,14 +132,15 @@ class DT(BinaryClassifier):
             else:
                 self.isLeaf  = False
                 self.feature = bestFeature ### TODO: YOUR CODE HERE
-                used.append(bestFeature)
+                new_used = used[:]
+                new_used.append(bestFeature)
 
                 self.left  = DT({'maxDepth': maxDepth-1})
                 self.right = DT({'maxDepth': maxDepth-1})
                 # recurse on our children by calling
-                #   self.left.trainDT(...) 
+                #   self.left.trainDT(...)
                 # and
-                #   self.right.trainDT(...) 
+                #   self.right.trainDT(...)
                 # with appropriate arguments
                 ### TODO: YOUR CODE HERE
                 nos = [[], []]
@@ -152,8 +153,8 @@ class DT(BinaryClassifier):
                         yess[0].append(x)
                         yess[1].append(Y[i])
 
-                self.left.trainDT(array(nos[0]), nos[1], maxDepth - 1, used)
-                self.right.trainDT(array(yess[0]), yess[1], maxDepth - 1, used)
+                self.left.trainDT(array(nos[0]), nos[1], maxDepth - 1, new_used)
+                self.right.trainDT(array(yess[0]), yess[1], maxDepth - 1, new_used)
 
     def train(self, X, Y):
         """
@@ -163,17 +164,17 @@ class DT(BinaryClassifier):
 
         Some hints/suggestions:
           - make sure you don't build the tree deeper than self.opts['maxDepth']
-          
+
           - make sure you don't try to reuse features (this could lead
             to very deep trees that keep splitting on the same feature
             over and over again)
-            
+
           - it is very useful to be able to 'split' matrices and vectors:
             if you want the ids for all the Xs for which the 5th feature is
             on, say X(:,5)>=0.5.  If you want the corresponting classes,
             say Y(X(:,5)>=0.5) and if you want the correspnding rows of X,
             say X(X(:,5)>=0.5,:)
-            
+
           - i suggest having train() just call a second function that
             takes additional arguments telling us how much more depth we
             have left and what features we've used already
@@ -189,6 +190,6 @@ class DT(BinaryClassifier):
         Return our internal representation: for DTs, this is just our
         tree structure -- i.e., ourselves
         """
-        
+
         return self
 

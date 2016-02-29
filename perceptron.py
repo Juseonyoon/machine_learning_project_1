@@ -95,7 +95,7 @@ class Perceptron(BinaryClassifier):
         the perceptron, but might be necessary for other classifiers.
         """
         return   # don't need to do anything here
-        
+
 
     def getRepresentation(self):
         """
